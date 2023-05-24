@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   StyleProp,
-  TextStyle,
   NativeSyntheticEvent,
   NativeScrollEvent,
   Animated,
@@ -16,10 +15,10 @@ import WheelPickerItem from './WheelPickerItem';
 
 interface Props {
   selectedIndex: number;
-  options: string[];
+  options: any[];
   onChange: (index: number) => void;
+  renderItem: (option: any, index: number) => React.ReactElement | null;
   selectedIndicatorStyle?: StyleProp<ViewStyle>;
-  itemTextStyle?: TextStyle;
   itemStyle?: ViewStyle;
   itemHeight?: number;
   containerStyle?: ViewStyle;
@@ -36,10 +35,10 @@ const WheelPicker: React.FC<Props> = ({
   selectedIndex,
   options,
   onChange,
+  renderItem,
   selectedIndicatorStyle = {},
   containerStyle = {},
   itemStyle = {},
-  itemTextStyle = {},
   itemHeight = 40,
   scaleFunction = (x: number) => 1.0 ** x,
   rotationFunction = (x: number) => 1 - Math.pow(1 / 2, x),
@@ -54,7 +53,7 @@ const WheelPicker: React.FC<Props> = ({
 
   const containerHeight = (1 + visibleRest * 2) * itemHeight;
   const paddedOptions = useMemo(() => {
-    const array: (string | null)[] = [...options];
+    const array: (any | null)[] = [...options];
     for (let i = 0; i < visibleRest; i++) {
       array.unshift(null);
       array.push(null);
@@ -152,16 +151,16 @@ const WheelPicker: React.FC<Props> = ({
           <WheelPickerItem
             key={`option-${index}`}
             index={index}
-            option={option}
             style={itemStyle}
-            textStyle={itemTextStyle}
             height={itemHeight}
             currentScrollIndex={currentScrollIndex}
             scaleFunction={scaleFunction}
             rotationFunction={rotationFunction}
             opacityFunction={opacityFunction}
             visibleRest={visibleRest}
-          />
+          >
+            {renderItem(option, index)}
+          </WheelPickerItem>
         )}
       />
     </View>
