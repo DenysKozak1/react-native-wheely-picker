@@ -1,0 +1,7 @@
+/node_modules
+/lib
+yarn-error.log
+
+# OSX
+#
+.DS_Store
