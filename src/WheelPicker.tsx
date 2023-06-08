@@ -101,17 +101,6 @@ const WheelPicker: React.FC<Props> = ({
     }
   }, [selectedIndex, options]);
 
-  /**
-   * If selectedIndex is changed from outside (not via onChange) we need to scroll to the specified index.
-   * This ensures that what the user sees as selected in the picker always corresponds to the value state.
-   */
-  useEffect(() => {
-    flatListRef.current?.scrollToIndex({
-      index: selectedIndex,
-      animated: false,
-    });
-  }, [selectedIndex]);
-
   return (
     <View
       style={[styles.container, { height: containerHeight }, containerStyle]}
@@ -139,7 +128,12 @@ const WheelPicker: React.FC<Props> = ({
         onMomentumScrollEnd={handleMomentumScrollEnd}
         snapToOffsets={offsets}
         decelerationRate={decelerationRate}
-        initialScrollIndex={selectedIndex}
+        onLayout={() => {
+          flatListRef.current?.scrollToIndex({
+            index: selectedIndex,
+            animated: false,
+          });
+        }}
         getItemLayout={(data, index) => ({
           length: itemHeight,
           offset: itemHeight * index,
